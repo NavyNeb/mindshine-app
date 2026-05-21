@@ -43,3 +43,7 @@ app-example
 # generated native folders
 /ios
 /android
+
+# design reference screenshots (large, reference-only)
+assets/design-refs/
+**/.DS_Store
