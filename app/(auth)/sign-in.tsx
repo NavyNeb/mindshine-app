@@ -1,10 +1,13 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { Image, Pressable, View } from "react-native";
+import { AuthScaffold } from "@/src/components/AuthScaffold";
 import { Button } from "@/src/components/Button";
-import { Screen } from "@/src/components/Screen";
+import { Input } from "@/src/components/Input";
+import { SocialRow } from "@/src/components/SocialRow";
 import { Body, Heading } from "@/src/components/Typography";
 import { mapAuthError, signInWithEmail } from "@/src/features/auth/auth.api";
+import { images } from "@/src/theme/assets";
 
 export default function SignIn() {
   const router = useRouter();
@@ -22,19 +25,63 @@ export default function SignIn() {
   }
 
   return (
-    <Screen className="justify-center">
-      <Heading className="mb-6">Welcome back</Heading>
-      <TextInput placeholder="Email" autoCapitalize="none" keyboardType="email-address"
-        value={email} onChangeText={setEmail}
-        className="border border-ink/20 rounded-card px-4 py-3 mb-3 font-body" />
-      <TextInput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword}
-        className="border border-ink/20 rounded-card px-4 py-3 mb-3 font-body" />
-      {error ? <Body className="text-red-600 mb-3 text-[14px]">{error}</Body> : null}
-      <Button label={loading ? "Signing in…" : "Sign In"} disabled={loading} onPress={submit} />
-      <View className="flex-row justify-center mt-4">
-        <Body className="text-[14px]">No account? </Body>
-        <Link href="/(auth)/sign-up"><Body className="text-[14px] font-medium text-primary-200">Sign up</Body></Link>
+    <AuthScaffold
+      top={
+        <View className="items-center py-4">
+          <Image
+            source={images.signInIllustration}
+            style={{ width: "100%", height: 200 }}
+            resizeMode="contain"
+          />
+        </View>
+      }
+    >
+      <Heading className="text-[28px] leading-[32px] mb-2">Sign In</Heading>
+      <Body className="text-ink/70 mb-6">
+        Sign in to track your sessions and stay on your goals.
+      </Body>
+
+      <Input
+        label="Email"
+        placeholder="Enter your email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+
+      <Input
+        label="Password"
+        placeholder="Enter your password"
+        secure
+        value={password}
+        onChangeText={setPassword}
+      />
+
+      <View className="items-end mb-6">
+        <Pressable accessibilityLabel="Forgot password" hitSlop={8}>
+          <Body className="font-heading text-ink text-[14px]">Forgot password?</Body>
+        </Pressable>
       </View>
-    </Screen>
+
+      {error ? (
+        <Body className="text-red-600 mb-4 text-[14px]">{error}</Body>
+      ) : null}
+
+      <Button
+        label={loading ? "Signing in…" : "Sign In"}
+        disabled={loading}
+        onPress={submit}
+      />
+
+      <SocialRow />
+
+      <View className="flex-row justify-center mt-4">
+        <Body className="text-[14px]">Don't have an account? </Body>
+        <Link href="/(auth)/sign-up">
+          <Body className="text-[14px] font-heading">Sign up</Body>
+        </Link>
+      </View>
+    </AuthScaffold>
   );
 }
