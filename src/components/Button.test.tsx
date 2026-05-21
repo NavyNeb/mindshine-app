@@ -7,3 +7,10 @@ test("renders label and fires onPress", () => {
   fireEvent.press(getByText("Play Now"));
   expect(onPress).toHaveBeenCalledTimes(1);
 });
+
+test("disabled button does not fire onPress", () => {
+  const onPress = jest.fn();
+  const { getByText } = render(<Button label="Go" onPress={onPress} disabled />);
+  fireEvent.press(getByText("Go"));
+  expect(onPress).not.toHaveBeenCalled();
+});
