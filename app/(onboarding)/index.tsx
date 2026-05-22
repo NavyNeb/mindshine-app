@@ -5,6 +5,8 @@ import {
   Dimensions,
   Image,
   ImageSourcePropType,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -14,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/src/components/Button";
 import { useOnboardingSeen } from "@/src/features/onboarding/useOnboardingSeen";
 import { images } from "@/src/theme/assets";
+import { colors } from "@/src/theme/tokens";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -47,7 +50,7 @@ function PageDots({ current }: { current: number }) {
             width: i === current ? 24 : 8,
             height: 8,
             borderRadius: 4,
-            backgroundColor: i === current ? "#0D1101" : "rgba(13,17,1,0.3)",
+            backgroundColor: i === current ? colors.ink.DEFAULT : "rgba(13,17,1,0.3)",
           }}
         />
       ))}
@@ -56,38 +59,38 @@ function PageDots({ current }: { current: number }) {
 }
 
 // ─── Slide 1 — "Find your calm" ───────────────────────────────────────────────
-function Slide1({ onNext }: { onNext: () => void }) {
+function Slide1({ onNext, page }: { onNext: () => void; page: number }) {
   return (
     <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT }} className="flex-1">
       {/* Top green section */}
-      <View
-        style={{ flex: 1, backgroundColor: "#22D795", paddingTop: 60, paddingHorizontal: 28 }}
-      >
-        <Text
-          style={{
-            fontFamily: "MPLUSRounded1c_700Bold",
-            fontSize: 40,
-            lineHeight: 46,
-            color: "#0D1101",
-          }}
-        >
-          Find your calm
-        </Text>
-        <Text
-          style={{
-            fontFamily: "Inter_400Regular",
-            fontSize: 16,
-            color: "#0D1101",
-            opacity: 0.65,
-            marginTop: 10,
-          }}
-        >
-          Reduce stress, sleep better, stay focused.
-        </Text>
+      <View style={{ flex: 1, backgroundColor: colors.primary.DEFAULT, paddingHorizontal: 28 }}>
+        <SafeAreaView edges={["top"]}>
+          <Text
+            style={{
+              fontFamily: "MPLUSRounded1c_700Bold",
+              fontSize: 40,
+              lineHeight: 46,
+              color: colors.ink.DEFAULT,
+            }}
+          >
+            Find your calm
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Inter_400Regular",
+              fontSize: 16,
+              color: colors.ink.DEFAULT,
+              opacity: 0.65,
+              marginTop: 10,
+            }}
+          >
+            Reduce stress, sleep better, stay focused.
+          </Text>
+        </SafeAreaView>
       </View>
 
       {/* Bottom lime section with hill curve */}
-      <View style={{ flex: 1.3, backgroundColor: "#D3F761", alignItems: "center" }}>
+      <View style={{ flex: 1.3, backgroundColor: colors.secondary.DEFAULT, alignItems: "center" }}>
         {/* Hill curve at the top */}
         <View
           style={{
@@ -96,7 +99,7 @@ function Slide1({ onNext }: { onNext: () => void }) {
             width: SCREEN_WIDTH * 1.6,
             height: 120,
             borderRadius: SCREEN_WIDTH * 0.8,
-            backgroundColor: "#D3F761",
+            backgroundColor: colors.secondary.DEFAULT,
             alignSelf: "center",
           }}
         />
@@ -113,7 +116,7 @@ function Slide1({ onNext }: { onNext: () => void }) {
               width: 52,
               height: 52,
               borderRadius: 26,
-              backgroundColor: "#F97B7B",
+              backgroundColor: colors.accentPink,
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -129,13 +132,13 @@ function Slide1({ onNext }: { onNext: () => void }) {
               left: 6,
               width: SCREEN_WIDTH * 0.78,
               borderRadius: 12,
-              backgroundColor: "#0D1101",
+              backgroundColor: colors.ink.DEFAULT,
               paddingVertical: 28,
               paddingHorizontal: 24,
               transform: [{ rotate: "-4deg" }],
             }}
           >
-            <Text style={{ fontSize: 36, lineHeight: 46, color: "#0D1101" }}>
+            <Text style={{ fontSize: 36, lineHeight: 46, color: colors.ink.DEFAULT }}>
               {"Reduce Stress\nImprove Sleep\nBoost Focus"}
             </Text>
           </View>
@@ -145,9 +148,9 @@ function Slide1({ onNext }: { onNext: () => void }) {
             style={{
               width: SCREEN_WIDTH * 0.78,
               borderRadius: 12,
-              backgroundColor: "#FFBB00",
+              backgroundColor: colors.accentYellow,
               borderWidth: 3,
-              borderColor: "#0D1101",
+              borderColor: colors.ink.DEFAULT,
               paddingVertical: 28,
               paddingHorizontal: 24,
               transform: [{ rotate: "-4deg" }],
@@ -158,7 +161,7 @@ function Slide1({ onNext }: { onNext: () => void }) {
                 fontFamily: "MPLUSRounded1c_700Bold",
                 fontSize: 36,
                 lineHeight: 46,
-                color: "#0D1101",
+                color: colors.ink.DEFAULT,
               }}
             >
               {"Reduce Stress\nImprove Sleep\nBoost Focus"}
@@ -174,12 +177,12 @@ function Slide1({ onNext }: { onNext: () => void }) {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: "#D3F761",
+          backgroundColor: colors.secondary.DEFAULT,
           paddingHorizontal: 24,
           paddingBottom: 40,
         }}
       >
-        <PageDots current={0} />
+        <PageDots current={page} />
         <Button label="Get Started" onPress={onNext} />
       </View>
     </View>
@@ -187,7 +190,17 @@ function Slide1({ onNext }: { onNext: () => void }) {
 }
 
 // ─── Slide 2 — "How are you feeling today?" ────────────────────────────────────
-function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) {
+function Slide2({
+  onDone,
+  onSkip,
+  onBack,
+  page,
+}: {
+  onDone: () => void;
+  onSkip: () => void;
+  onBack: () => void;
+  page: number;
+}) {
   const [selected, setSelected] = useState<MoodKey | null>(null);
 
   function handleSelect(key: MoodKey) {
@@ -196,7 +209,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
   }
 
   return (
-    <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: "#22D795" }}>
+    <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: colors.primary.DEFAULT }}>
       {/* Header */}
       <SafeAreaView edges={["top"]}>
         <View
@@ -211,10 +224,10 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
         >
           <TouchableOpacity
             accessibilityLabel="Go back"
-            onPress={onSkip}
+            onPress={onBack}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Text style={{ fontSize: 24, color: "#0D1101" }}>{"←"}</Text>
+            <Text style={{ fontSize: 24, color: colors.ink.DEFAULT }}>{"←"}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             accessibilityRole="button"
@@ -225,7 +238,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
               style={{
                 fontFamily: "MPLUSRounded1c_700Bold",
                 fontSize: 18,
-                color: "#0D1101",
+                color: colors.ink.DEFAULT,
               }}
             >
               Skip
@@ -241,7 +254,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
             fontFamily: "MPLUSRounded1c_700Bold",
             fontSize: 36,
             lineHeight: 44,
-            color: "#0D1101",
+            color: colors.ink.DEFAULT,
           }}
         >
           How are you feeling today?
@@ -250,7 +263,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
           style={{
             fontFamily: "Inter_400Regular",
             fontSize: 16,
-            color: "#0D1101",
+            color: colors.ink.DEFAULT,
             opacity: 0.65,
             marginTop: 8,
           }}
@@ -287,7 +300,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
                     ? "rgba(13,17,1,0.18)"
                     : "rgba(255,255,255,0.18)",
                   borderWidth: isSelected ? 3 : 0,
-                  borderColor: isSelected ? "#0D1101" : "transparent",
+                  borderColor: isSelected ? colors.ink.DEFAULT : "transparent",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -302,7 +315,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
                 style={{
                   fontFamily: "Inter_400Regular",
                   fontSize: 14,
-                  color: "#0D1101",
+                  color: colors.ink.DEFAULT,
                   marginTop: 6,
                   fontWeight: isSelected ? "700" : "400",
                 }}
@@ -324,7 +337,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
             width: SCREEN_WIDTH * 1.5,
             height: 140,
             borderRadius: SCREEN_WIDTH * 0.75,
-            backgroundColor: "#D3F761",
+            backgroundColor: colors.secondary.DEFAULT,
             alignSelf: "center",
           }}
         />
@@ -335,7 +348,7 @@ function Slide2({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) 
             width: "100%",
           }}
         >
-          <PageDots current={1} />
+          <PageDots current={page} />
           <Button label="Next" onPress={onDone} />
         </View>
       </View>
@@ -352,7 +365,15 @@ export default function OnboardingCarousel() {
 
   function goToSlide2() {
     scrollRef.current?.scrollTo({ x: SCREEN_WIDTH, animated: true });
-    setPage(1);
+  }
+
+  function goToSlide1() {
+    scrollRef.current?.scrollTo({ x: 0, animated: true });
+  }
+
+  function handleMomentumScrollEnd(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    const offsetX = e.nativeEvent.contentOffset.x;
+    setPage(Math.round(offsetX / SCREEN_WIDTH));
   }
 
   async function handleDone() {
@@ -366,12 +387,13 @@ export default function OnboardingCarousel() {
       horizontal
       pagingEnabled
       showsHorizontalScrollIndicator={false}
-      scrollEnabled={false} // programmatic only — swipe disabled per spec (buttons drive flow)
+      scrollEnabled={true}
+      onMomentumScrollEnd={handleMomentumScrollEnd}
       style={{ flex: 1 }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexDirection: "row" }}
     >
-      <Slide1 onNext={goToSlide2} />
-      <Slide2 onDone={handleDone} onSkip={handleDone} />
+      <Slide1 onNext={goToSlide2} page={page} />
+      <Slide2 onDone={handleDone} onSkip={handleDone} onBack={goToSlide1} page={page} />
     </ScrollView>
   );
 }

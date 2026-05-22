@@ -4,6 +4,8 @@ export const colors = {
   secondary: { DEFAULT: "#D3F761", 400: "#6D9100", 500: "#547800" },
   ink: { DEFAULT: "#0D1101", 800: "#01130C" },
   white: "#FFFFFF",
+  accentYellow: "#FFBB00",
+  accentPink: "#F97B7B",
 } as const;
 
 export const radii = { sm: 8, md: 16, card: 24, pill: 999 } as const;
