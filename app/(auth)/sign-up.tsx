@@ -14,13 +14,20 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function submit() {
+    setError("");
+    setNotice("");
     setLoading(true);
-    const { error } = await signUpWithEmail(name.trim(), email.trim(), password);
+    const { error, session } = await signUpWithEmail(name.trim(), email.trim(), password);
     setLoading(false);
     if (error) return setError(mapAuthError(error));
+    if (!session) {
+      // Email confirmation is enabled — no session yet. Don't bounce into the app.
+      return setNotice("Account created! Check your email to confirm, then sign in.");
+    }
     router.replace("/(tabs)");
   }
 
@@ -57,6 +64,10 @@ export default function SignUp() {
 
       {error ? (
         <Body className="text-red-600 mb-4 text-[14px]">{error}</Body>
+      ) : null}
+
+      {notice ? (
+        <Body className="text-ink mb-4 text-[14px]">{notice}</Body>
       ) : null}
 
       <View className="mt-4">

@@ -7,3 +7,10 @@ test("maps common supabase auth errors to friendly copy", () => {
     .toBe("An account with this email already exists.");
   expect(mapAuthError(null)).toBe("");
 });
+
+test("maps email-confirmation and invalid-email errors", () => {
+  expect(mapAuthError({ message: "Email not confirmed" } as any))
+    .toBe("Please confirm your email, then sign in.");
+  expect(mapAuthError({ message: 'Email address "x@example.com" is invalid' } as any))
+    .toBe("Please enter a valid email address.");
+});
