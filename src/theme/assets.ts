@@ -7,6 +7,7 @@ export const images = {
 
   // Onboarding
   signInIllustration: require("../../assets/images/sign-in-illustration.png"),
+  appBackground: require("../../assets/images/background-app-image.png"),
 
   // Session / content illustrations
   deepWork: require("../../assets/images/deep-work.png"),

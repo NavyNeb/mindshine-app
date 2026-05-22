@@ -59,132 +59,102 @@ function PageDots({ current }: { current: number }) {
 }
 
 // ─── Slide 1 — "Find your calm" ───────────────────────────────────────────────
+const CARD_TEXT = "Reduce Stress\nImprove Sleep\nBoost Focus";
+const CARD_WIDTH = SCREEN_WIDTH * 0.72;
+
 function Slide1({ onNext, page }: { onNext: () => void; page: number }) {
   return (
-    <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT }} className="flex-1">
-      {/* Top green section */}
-      <View style={{ flex: 1, backgroundColor: colors.primary.DEFAULT, paddingHorizontal: 28 }}>
-        <SafeAreaView edges={["top"]}>
+    <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT }}>
+      {/* Full-bleed Figma background (green sky + birds + lime dome) */}
+      <Image
+        source={images.appBackground}
+        style={{ position: "absolute", top: 0, left: 0, width: SCREEN_WIDTH, height: SCREEN_HEIGHT }}
+        resizeMode="cover"
+      />
+
+      <SafeAreaView style={{ flex: 1 }} edges={["top", "bottom"]}>
+        {/* Heading — centered in the green sky */}
+        <View style={{ paddingTop: 24, paddingHorizontal: 28, alignItems: "center" }}>
           <Text
             style={{
               fontFamily: "MPLUSRounded1c_700Bold",
               fontSize: 40,
               lineHeight: 46,
               color: colors.ink.DEFAULT,
+              textAlign: "center",
             }}
           >
             Find your calm
           </Text>
           <Text
             style={{
-              fontFamily: "Inter_400Regular",
+              fontFamily: "Inter_500Medium",
               fontSize: 16,
               color: colors.ink.DEFAULT,
-              opacity: 0.65,
-              marginTop: 10,
+              opacity: 0.6,
+              marginTop: 8,
+              textAlign: "center",
             }}
           >
-            Reduce stress, sleep better, stay focused.
+            Your daily moment of calm.
           </Text>
-        </SafeAreaView>
-      </View>
+        </View>
 
-      {/* Bottom lime section with hill curve */}
-      <View style={{ flex: 1.3, backgroundColor: colors.secondary.DEFAULT, alignItems: "center" }}>
-        {/* Hill curve at the top */}
-        <View
-          style={{
-            position: "absolute",
-            top: -60,
-            width: SCREEN_WIDTH * 1.6,
-            height: 120,
-            borderRadius: SCREEN_WIDTH * 0.8,
-            backgroundColor: colors.secondary.DEFAULT,
-            alignSelf: "center",
-          }}
-        />
-
-        {/* Rotated yellow card with neo-brutalist border */}
-        <View style={{ marginTop: 40, alignItems: "center" }}>
-          {/* Pink frowning emoji bubble — top-right of card */}
-          <View
-            style={{
-              position: "absolute",
-              top: -20,
-              right: 24,
-              zIndex: 10,
-              width: 52,
-              height: 52,
-              borderRadius: 26,
-              backgroundColor: colors.accentPink,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ fontSize: 26 }}>😞</Text>
-          </View>
-
-          {/* Shadow layer */}
-          <View
-            style={{
-              position: "absolute",
-              top: 6,
-              left: 6,
-              width: SCREEN_WIDTH * 0.78,
-              borderRadius: 12,
-              backgroundColor: colors.ink.DEFAULT,
-              paddingVertical: 28,
-              paddingHorizontal: 24,
-              transform: [{ rotate: "-4deg" }],
-            }}
-          >
-            <Text style={{ fontSize: 36, lineHeight: 46, color: colors.ink.DEFAULT }}>
-              {"Reduce Stress\nImprove Sleep\nBoost Focus"}
-            </Text>
-          </View>
-
-          {/* Foreground card */}
-          <View
-            style={{
-              width: SCREEN_WIDTH * 0.78,
-              borderRadius: 12,
-              backgroundColor: colors.accentYellow,
-              borderWidth: 3,
-              borderColor: colors.ink.DEFAULT,
-              paddingVertical: 28,
-              paddingHorizontal: 24,
-              transform: [{ rotate: "-4deg" }],
-            }}
-          >
-            <Text
+        {/* Rotated card + frown — centered over the lime dome */}
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <View style={{ width: CARD_WIDTH }}>
+            {/* Hard ink shadow: identical box, offset down-right, same rotation */}
+            <View
               style={{
-                fontFamily: "MPLUSRounded1c_700Bold",
-                fontSize: 36,
-                lineHeight: 46,
-                color: colors.ink.DEFAULT,
+                position: "absolute",
+                top: 9,
+                left: 8,
+                width: CARD_WIDTH,
+                borderRadius: 14,
+                backgroundColor: colors.ink.DEFAULT,
+                paddingVertical: 30,
+                paddingHorizontal: 26,
+                transform: [{ rotate: "-8deg" }],
               }}
             >
-              {"Reduce Stress\nImprove Sleep\nBoost Focus"}
-            </Text>
+              <Text style={{ fontFamily: "MPLUSRounded1c_700Bold", fontSize: 34, lineHeight: 44, color: colors.ink.DEFAULT }}>
+                {CARD_TEXT}
+              </Text>
+            </View>
+
+            {/* Foreground amber card */}
+            <View
+              style={{
+                width: CARD_WIDTH,
+                borderRadius: 14,
+                backgroundColor: colors.accentYellow,
+                borderWidth: 3,
+                borderColor: colors.ink.DEFAULT,
+                paddingVertical: 30,
+                paddingHorizontal: 26,
+                transform: [{ rotate: "-8deg" }],
+              }}
+            >
+              <Text style={{ fontFamily: "MPLUSRounded1c_700Bold", fontSize: 34, lineHeight: 44, color: colors.ink.DEFAULT }}>
+                {CARD_TEXT}
+              </Text>
+            </View>
+
+            {/* Pink frown bubble — overlapping the card's top-right */}
+            <Image
+              source={images.emojiButton}
+              resizeMode="contain"
+              style={{ position: "absolute", top: -26, right: -10, width: 66, height: 66, zIndex: 10 }}
+            />
           </View>
         </View>
-      </View>
 
-      {/* Button + dots anchored near bottom */}
-      <View
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: colors.secondary.DEFAULT,
-          paddingHorizontal: 24,
-          paddingBottom: 40,
-        }}
-      >
-        <PageDots current={page} />
-        <Button label="Get Started" onPress={onNext} />
-      </View>
+        {/* Bottom — dots + Get Started */}
+        <View style={{ paddingHorizontal: 24, paddingBottom: 8 }}>
+          <PageDots current={page} />
+          <Button label="Get Started" onPress={onNext} />
+        </View>
+      </SafeAreaView>
     </View>
   );
 }
