@@ -1,12 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
 import { useAuth } from "@/src/features/auth/useAuth";
+import { CustomTabBar } from "@/src/components/CustomTabBar";
 
 export default function TabsLayout() {
   const { session, initialized } = useAuth();
   if (initialized && !session) return <Redirect href="/(auth)/sign-in" />;
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#FFFFFF",
