@@ -11,11 +11,13 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "@/src/features/auth/AuthProvider";
 import { queryClient } from "@/src/lib/queryClient";
+import { configureAudioMode } from "@/src/features/player/audioMode";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded] = useFonts({ Inter_400Regular, Inter_500Medium, MPLUSRounded1c_700Bold });
+  useEffect(() => { configureAudioMode(); }, []);
   useEffect(() => { if (loaded) SplashScreen.hideAsync(); }, [loaded]);
   if (!loaded) return null;
 

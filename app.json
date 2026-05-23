@@ -9,7 +9,10 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,7 +43,8 @@
         }
       ],
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,
