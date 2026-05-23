@@ -13,7 +13,7 @@ export function MiniPlayer() {
   if (!track || !player) return null;
   return (
     <MiniPlayerBar
-      onOpen={() => router.push("/player" as never)}
+      onOpen={() => router.push("/player")}
       onToggle={toggle}
       title={track.title}
       subtitle={track.subtitle ?? ""}

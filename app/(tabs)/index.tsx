@@ -1,4 +1,4 @@
-import * as Haptics from "expo-haptics";
+import { useRouter } from "expo-router";
 import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/src/components/Button";
@@ -10,11 +10,20 @@ import { illustrationForTrack } from "@/src/features/content/illustrations";
 import { useTracks } from "@/src/features/content/useContent";
 import { useProfile } from "@/src/features/profile/useProfile";
 import { useAuth } from "@/src/features/auth/useAuth";
+import { usePlayerStore } from "@/src/features/player/playerStore";
+import type { TrackWithCategory } from "@/src/features/content/types";
 
 export default function Home() {
+  const router = useRouter();
+  const loadAndPlay = usePlayerStore((s) => s.loadAndPlay);
   const { session } = useAuth();
   const { data: profile } = useProfile(session?.user.id);
   const { data: tracks, isLoading, isError, refetch, isRefetching } = useTracks();
+
+  const openPlayer = (track: TrackWithCategory) => {
+    loadAndPlay(track);
+    router.push("/player");
+  };
 
   const pick = tracks?.[0];
   const grid = tracks?.slice(1) ?? [];
@@ -62,10 +71,7 @@ export default function Home() {
                     subtitle={pick.subtitle}
                     durationSec={pick.duration_sec}
                     illustration={illustrationForTrack(pick.title)}
-                    onPlay={() => {
-                      // TODO(player): wire to player when audio milestone lands
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                    }}
+                    onPlay={() => openPlayer(pick)}
                   />
                 ) : null}
                 <View className="flex-row flex-wrap justify-between mt-5">
@@ -77,10 +83,7 @@ export default function Home() {
                         durationSec={t.duration_sec}
                         illustration={illustrationForTrack(t.title)}
                         variant={i % 3 === 1 ? "secondary" : "primary"}
-                        onPress={() => {
-                          // TODO(player): wire to player when audio milestone lands
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                        }}
+                        onPress={() => openPlayer(t)}
                       />
                     </View>
                   ))}
